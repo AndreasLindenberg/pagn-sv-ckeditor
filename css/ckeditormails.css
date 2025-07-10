@@ -1,0 +1,226 @@
+/**
+ * This file is part of SV-Tool-Editor.
+ * Copyright (C) 2025 Andreas Lindenberg <lindenberg@abendgymnasien.de>
+ *
+ * SV-Tool-Editor is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * SV-Tool-Editor is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with SV-Tool-Editor. If not, see <https://www.gnu.org/licenses/>.
+ */
+
+ @import url('https://fonts.googleapis.com/css2?family=Oswald&family=PT+Serif:ital,wght@0,400;0,700;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+
+@media print {
+	body {
+		margin: 0 !important;
+	}
+}
+
+#editorDialog {
+	display: none;
+    position: fixed; /* Position relativ zum Browserfenster */
+    top: auto; /* Abstand zur Oberkante */
+    left: 50%; /* Horizontales Zentrum */
+    transform: translateX(-50%); /* Exaktes Zentrieren */
+    width: max-content; /* Breite richtet sich nach dem breitesten Inhalt */
+    max-width: 800px; /* Maximale Breite relativ zur Fenstergröße */
+    height: 90%; /* Variable Höhe */
+    /* max-height: calc(100vh - 200px); Maximale Höhe beschränken, hier nur ein default, wird programmatisch überschrieben */
+    padding: 2px; /* Innenabstand */
+    border: 1px solid #ccc; /* Rahmen */
+    border-radius: 10px; /* Abgerundete Ecken */
+    background-color: rgb(240, 240, 240); /* Hintergrundfarbe */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Schatten */
+	margin: 0px; /* Zentrieren */
+    white-space: nowrap; /* Inhalt in einer Zeile, um Breite zu messen */
+}
+
+#editorDialogbox {
+	display: flex;
+	flex-direction: column;
+	height: auto;
+	max-width: fit-content;
+	row-gap: 10px;
+	font-size: 0.9em;
+	padding-inline: 20px;
+	margin: 15px 0px;
+}
+
+.main-container {
+	font-family: 'Lato';
+	width: fit-content;
+	margin-left: auto;
+	margin-right: auto;
+}
+  
+.ck-content {
+	font-family: 'Lato';
+	line-height: 1.6;
+	word-break: break-word;	    /* Zeilenumbrüche bei langen Wörtern */
+    overflow-x: hidden;			/* Verhindert horizontales Scrollen */
+}
+
+.ck-editor__editable {
+    height: auto; /* Wird durch JavaScript überschrieben */
+    white-space: normal; /* Ermöglicht Zeilenumbrüche */
+    word-wrap: break-word; /* Bricht lange Wörter */
+}
+
+.editor-container_classic-editor .editor-container__editor {
+	min-width: 400px;
+	max-width: 100%;
+}
+
+.ck-content h3.category {
+	font-family: 'Oswald';
+	font-size: 20px;
+	font-weight: bold;
+	color: #555;
+	letter-spacing: 10px;
+	margin: 0;
+	padding-inline-end: 10px;	/* Damit die Scrollbar genug Platz hat */
+}
+
+.ck-content h2.document-title {
+	font-family: 'Oswald';
+	font-size: 50px;
+	font-weight: bold;
+	margin: 0;
+	padding: 0;
+	padding-inline-end: 10px;	/* Damit die Scrollbar genug Platz hat */
+}
+
+.ck-content h3.document-subtitle {
+	font-family: 'Oswald';
+	font-size: 20px;
+	color: #555;
+	margin: 0 0 1em;
+	font-weight: bold;
+	padding-inline-end: 10px;	/* Damit die Scrollbar genug Platz hat */
+}
+
+.ck-content p {
+	padding-inline-end: 10px;	/* Damit die Scrollbar genug Platz hat */
+}
+
+.ck-content ul {
+	padding-inline-end: 10px;	/* Damit die Scrollbar genug Platz hat */
+}
+
+.ck-content p.info-box {
+	--background-size: 30px;
+	--background-color: #e91e63;
+	padding: 1.2em 2em;
+	border: 1px solid var(--background-color);
+	background: linear-gradient(
+			135deg,
+			var(--background-color) 0%,
+			var(--background-color) var(--background-size),
+			transparent var(--background-size)
+		),
+		linear-gradient(
+			135deg,
+			transparent calc(100% - var(--background-size)),
+			var(--background-color) calc(100% - var(--background-size)),
+			var(--background-color)
+		);
+	border-radius: 10px;
+	margin: 1.5em 2em;
+	box-shadow: 5px 5px 0 #ffe6ef;
+}
+
+.ck-content blockquote.side-quote {
+	font-family: 'Oswald';
+	font-style: normal;
+	float: right;
+	width: 35%;
+	position: relative;
+	border: 0;
+	overflow: visible;		/* Zitate dürfen über den Rand hinausragen */
+	z-index: 1;
+	margin-left: 1em;
+}
+
+.ck-content blockquote.side-quote::before {
+	content: '“';
+	position: absolute;
+	top: -37px;
+	left: -10px;
+	display: block;
+	font-size: 200px;
+	color: #e7e7e7;
+	z-index: -1;
+	line-height: 1;
+}
+
+.ck-content blockquote.side-quote p {
+	font-size: 2em;
+	line-height: 1;
+}
+
+.ck-content blockquote.side-quote p:last-child:not(:first-child) {
+	font-size: 1.3em;
+	text-align: right;
+	color: #555;
+}
+
+.ck-content span.marker {
+	background: yellow;
+}
+
+.ck-content span.spoiler {
+	background: #000;
+	color: #000;
+}
+
+.ck-content span.spoiler:hover {
+	background: #000;
+	color: #fff;
+}
+
+.ck-content pre.fancy-code {
+	border: 0;
+	margin-left: 2em;
+	margin-right: 2em;
+	border-radius: 10px;
+}
+
+.ck-content pre.fancy-code::before {
+	content: '';
+	display: block;
+	height: 13px;
+	background: url(data:image/svg+xml;base64,PHN2ZyBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1NCAxMyI+CiAgPGNpcmNsZSBjeD0iNi41IiBjeT0iNi41IiByPSI2LjUiIGZpbGw9IiNGMzZCNUMiLz4KICA8Y2lyY2xlIGN4PSIyNi41IiBjeT0iNi41IiByPSI2LjUiIGZpbGw9IiNGOUJFNEQiLz4KICA8Y2lyY2xlIGN4PSI0Ny41IiBjeT0iNi41IiByPSI2LjUiIGZpbGw9IiM1NkM0NTMiLz4KPC9zdmc+Cg==);
+	margin-bottom: 8px;
+	background-repeat: no-repeat;
+}
+
+.ck-content pre.fancy-code-dark {
+	background: #272822;
+	color: #fff;
+	box-shadow: 5px 5px 0 #0000001f;
+}
+
+.ck-content pre.fancy-code-bright {
+	background: #dddfe0;
+	color: #000;
+	box-shadow: 5px 5px 0 #b3b3b3;
+}
+
+div.emailadressat {
+	border-color: slategray;
+	border-style: groove;
+	padding: 5px 10px;
+}
+
+#adressat {
+	font-style: italic;
+}
