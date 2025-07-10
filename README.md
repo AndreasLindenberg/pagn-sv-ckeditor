@@ -4,7 +4,7 @@ Veröffentlichung der Module des SV-Tools, die den ckeditor aufrufen.
 # SV-Tool
 
 **SV-Tool** ist ein webbasiertes Verwaltungstool für Lehrkräfte und Studierende am Privaten Abendgymnasium in Nürnberg.
-Es verwendet den [CKEditor 5](https://ckeditor.com/ckeditor-5/), um E-Mails zu gestalten, die klassenweisean Studierende
+Es verwendet den [CKEditor 5](https://ckeditor.com/ckeditor-5/), um E-Mails zu gestalten, die klassenweise an Studierende
 oder an Lehrkräfte versendet werden.
 
 ## 🔧 Features
