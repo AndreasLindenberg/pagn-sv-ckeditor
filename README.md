@@ -39,4 +39,8 @@ oder an Lehrkräfte versendet werden.
 Dieses Projekt steht unter der **GNU General Public License v3.0** – siehe [LICENSE](./LICENSE).  
 Die Software darf frei verwendet, verändert und weitergegeben werden, solange die Lizenzbedingungen eingehalten werden.
 
+## Bildschirmfoto: ckeditor in der Anwendung
+<img width="691" height="592" alt="Einbettung ckeditor" src="https://github.com/user-attachments/assets/ae11b27f-c463-4175-9db4-365332447fc8" />
+
 © 2025 Privates Abendgymnasium Nürnberg, Andreas Lindenberg  
+
