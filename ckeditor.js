@@ -17,6 +17,12 @@
  */
 
 /***************************************************************************************************************************************************/
+// Letzte Überprüfung mit KI: 4.3.2026
+// KI: Claude Opus 4.5
+/***************************************************************************************************************************************************/
+
+/***************************************************************************************************************************************************/
+'use strict';
 
 let editor = null;
 
@@ -29,7 +35,6 @@ import {
     Autosave,
     BlockQuote,
     Bold,
-    Bookmark,
     CloudServices,
     CodeBlock,
     Essentials,
@@ -68,10 +73,14 @@ import {
 } from 'ckeditor5';
 
 /***************************************************************************************************************************************************/
-// zielgruppe: L oder S: Werden die Mails für Lehrkräfte oder für Studierende bearbeitet?
-// betrachtertyp: S, L, oder A: Person aus welcher Gruppe sitzt gerade vor dem Computer?
-// betrachterid: Welche Person konkret?
-
+/**
+ * Erstellt einen CKEditor und bindet ihn an das Textarea-Element mit der Id "editor". Dabei werden die Toolbar, die Plugins und die Sprache des Editors konfiguriert.
+ * Der Editor wird in einem Dialogfenster angezeigt, das sich an der Menubar orientiert. Das Dialogfenster passt seine Größe automatisch an die Fenstergröße an.
+ * zielgruppe: L oder S: Werden die Mails für Lehrkräfte oder für Studierende bearbeitet?
+ * betrachtertyp: S, L, oder A: Person aus welcher Gruppe sitzt gerade vor dem Computer?
+ * betrachterid: Welche Person konkret?
+ * @returns {Promise} Ein Promise, das den erstellten CKEditor zurückgibt.
+ */
 export function editorCreate() {
     return new Promise((resolve, reject) => {
         let uploadsurl = new URL("json/json_ckeditoruploads.php", window.location.origin + "/pagn-sv/");
@@ -336,7 +345,10 @@ export function editorCreate() {
 }
 
 /***************************************************************************************************************************************************/
-
+/**
+ * Zerstört den CKEditor, indem die destroy()-Methode des Editors aufgerufen wird. Dabei wird der Editor-Variable der Wert null zugewiesen.
+ * @returns {Promise} Ein Promise, das aufgelöst wird, wenn der Editor erfolgreich zerstört wurde, oder abgelehnt wird, wenn ein Fehler auftritt.
+ */
 export function editorDestroy() {
     return new Promise((resolve, reject) => {
         if (editor) {
@@ -357,8 +369,10 @@ export function editorDestroy() {
 }
 
 /***************************************************************************************************************************************************/
-// editorAdjustSize passt Höhe und Breite des Editorfensters an die es umgebende Dialogbox an.
-
+/**
+ * Passt die Größe des CKEditor-Fensters an die umgebende Dialogbox an.
+ * @returns {void}
+ */
 export function editorAdjustSize() {
     // Die Dialogbox passen wir so an, dass sie den verfügbaren Platz innerhalb des editorDialog-Fensters optimal nutzt
     const editorDialog = document.getElementById('editorDialog');
@@ -396,8 +410,7 @@ export function editorAdjustSize() {
 
     // Höhe der übrigen Zeilen berechnen (eine enthält den Editor, alle anderen Steuerelemente o.ä.)
     // U. U. ist ein row-gap in den Styles von dialogBox festgelegt, den wir noch berücksichtigen müssen
-    const computedDialogStyle = window.getComputedStyle(dialogBox);
-    const rowGap = parseFloat(computedDialogStyle.rowGap);
+    const rowGap = parseFloat(computedDialogBoxStyle.rowGap);
 
     // Die übrigen Zeilen haben die Klasse 'editorzeile'
     let totalLineHeight = 0;
@@ -415,14 +428,11 @@ export function editorAdjustSize() {
     // Verfügbare Höhe berechnen
     availableHeight -= totalLineHeight;
 
-    // Editor-Höhe setzen
+    // Editor-Höhe und seitliches Padding setzen
     editor.editing.view.change( writer => {
-        writer.setStyle( 'height', `${availableHeight}px`, editor.editing.view.document.getRoot() );
-    } );
-
-    // Wir verpassen dem Editor noch ein seitliches Padding von jeweils 8px
-    editor.editing.view.change( writer => {
-        writer.setStyle( 'inline-padding', '10px', editor.editing.view.document.getRoot() );
+        const root = editor.editing.view.document.getRoot();
+        writer.setStyle( 'height', `${availableHeight}px`, root );
+        writer.setStyle( 'inline-padding', '10px', root );
     } );
     
     // Jetzt passen wir noch die Breits an. Da haben wir weniger zu tun, da es nur eine Spalte gibt, die des Editors.
@@ -447,47 +457,23 @@ export function editorAdjustSize() {
 }
 
 /***************************************************************************************************************************************************/
-
-function onClickUpload()
-{
-    document.getElementById("file").click();
-}
-
-/***************************************************************************************************************************************************/
-const Max_Datei_Groesse = 200;              // Maximale Größe einer Datei in kB
-
-async function onDateienUpload()
-{
-    var files = document.getElementById("file").files;
-
-    if (files.length > 0 ) {
-
-        // Wir überprüfen die einzelnen Dateien auf ihre Größe.
-        for (let i = 0; i < files.length; i++) {
-            if (files[i].size > Max_Datei_Groesse * 1024){
-                alert(`Die Datei ${files[i].name} ist mit ${(files[i].size / 1024).toFixed(2)} kB zu groß! Erlaubt sind maximal ${Max_Datei_Groesse} kB.`);
-
-                // Selektion des input-Buttons löschen
-                document.getElementById("file").value = "";
-                return;
-            }
-        }
-    }
-}
-
-/***************************************************************************************************************************************************/
-// editorCheckStatus prüft, ob der Editor aktiv ist und den angegebenen Status hat. Andernfalls wird false zurückgegeben.
-
+/**
+ * Prüft, ob der Editor aktiv ist und den angegebenen Status hat. Andernfalls wird false zurückgegeben.
+ * @param {string} status 
+ * @returns {boolean} true, wenn der Editor aktiv ist und den angegebenen Status hat, andernfalls false.
+ */
 export function editorCheckStatus(status) {
     if (editor) {
-        return editor.state == status;
+        return editor.state === status;
     }
     return false;
 }
 
 /***************************************************************************************************************************************************/
-// editorGetData gibt den aktuellen Inhalt des Editors zurück.
-
+/**
+ * Gibt den aktuellen Inhalt des Editors zurück.
+ * @returns {string} Der aktuelle Inhalt des Editors.
+ */
 export function editorGetData() {
     if (editor) {
         return editor.getData();
@@ -497,7 +483,10 @@ export function editorGetData() {
 
 /***************************************************************************************************************************************************/
 // editorSetData setzt den Inhalt des Editors auf den übergebenen Wert.
-
+/**
+ * Setzt den Inhalt des Editors auf den übergebenen Wert.
+ * @param {string} data 
+ */
 export function editorSetData(data) {
     if (editor) {
         editor.setData(data);
@@ -505,8 +494,10 @@ export function editorSetData(data) {
 }
 
 /***************************************************************************************************************************************************/
-// editorSetReadOnly setzt den Editor in den ReadOnly-Modus oder nimmt ihn daraus heraus.
-
+/**
+ * Setzt den Editor in den ReadOnly-Modus oder nimmt ihn daraus heraus.
+ * @param {boolean} isReadOnly 
+ */
 export function editorSetReadOnly(isReadOnly) {
     if (editor) {
         if (isReadOnly) {
@@ -518,43 +509,95 @@ export function editorSetReadOnly(isReadOnly) {
 }
 
 /***************************************************************************************************************************************************/
-// editorInsertText fügt den übergebenen Text im HTML-Format an der aktuellen Cursorposition ein.
-
-export function editorInsertHTML(htmltext) {
+/**
+ * Fügt den übergebenen HTML-Text an der aktuellen Cursorposition ein.
+ * @param {string} htmltext  Der HTML-Text, der eingefügt werden soll.
+ * @param {boolean} cursorInNeuenParagraph  true: Es wird ein neuer Paragraph an den Text angefügt. Der Cursor wird in den letzten (neuen) Paragraph gesetzt. false: Cursor bleibt direkt hinter dem eingefügten Text
+ */ 
+export function editorInsertHTML(htmltext, cursorInNeuenParagraph = true) {
     if (editor) {
         // Über eine temporäre textarea wandeln wir html-Tags in Codierungen um.
         // Eingabe: escapeEl.innerHTML, Ausgabe: escapeEl.textContent
         let escapeEl = document.createElement('textarea');
-        escapeEl.innerHTML = htmltext;
+        escapeEl.innerHTML = htmltext + (cursorInNeuenParagraph ? '<p>&nbsp;</p>' : '');
 
         editor.model.change(writer => {
             writer.insertText(escapeEl.textContent, editor.model.document.selection.getLastPosition());
 
             escapeEl.innerHTML = editor.getData();
             editor.setData(escapeEl.textContent);
-
-            // Focus auf den Editor setzen
-            editor.editing.view.focus();
-            // Leider sitzt der Cursor am Anfang des Textes. Wir setzen ihn ans Ende
         });
+
+        if (cursorInNeuenParagraph) {
+            // Doppelte leere Paragraphen am Ende entfernen, aber mindestens einen behalten
+            editor.model.change(writer => {
+                const root = editor.model.document.getRoot();
+                // Nur entfernen wenn mehr als 2 Kinder vorhanden (Anrede + 2 leere Paragraphen)
+                while (root.childCount > 2) {
+                    const lastChild = root.getChild(root.childCount - 1);
+                    const secondLast = root.getChild(root.childCount - 2);
+                    
+                    // Prüfen ob beide Paragraphen sind und beide leer sind
+                    if (lastChild.name === 'paragraph' && secondLast.name === 'paragraph') {
+                        const lastText = lastChild.childCount > 0 ? lastChild.getChild(0).data : '';
+                        const secondLastText = secondLast.childCount > 0 ? secondLast.getChild(0).data : '';
+                        
+                        const lastIsEmpty = lastText === '' || lastText === '\u00A0' || lastText.trim() === '';
+                        const secondLastIsEmpty = secondLastText === '' || secondLastText === '\u00A0' || secondLastText.trim() === '';
+                        
+                        // Nur entfernen wenn beide leer sind (dann ist einer überflüssig)
+                        if (lastIsEmpty && secondLastIsEmpty) {
+                            writer.remove(lastChild);
+                        } else {
+                            break;
+                        }
+                    } else {
+                        break;
+                    }
+                }
+            });
+
+            // Cursor in den letzten Paragraph setzen (an den Anfang des Paragraphs)
+            editor.model.change(writer => {
+                const root = editor.model.document.getRoot();
+                const lastChild = root.getChild(root.childCount - 1);
+                if (lastChild) {
+                    // Position am Anfang des letzten Paragraphs (nach dem öffnenden Tag)
+                    writer.setSelection(lastChild, 0);
+                }
+            });
+        }
+
+        // Focus auf den Editor setzen
+        editor.editing.view.focus();
     }
 }
 
 /***************************************************************************************************************************************************/
-
+/**
+ * Setzt den übergebenen Text an der aktuellen Cursorposition ein. Der Cursor wird direkt hinter dem eingefügten Text positioniert.
+ * @param {string} text 
+ */
 export function editorInsertText(text) {
     if (editor) {
         editor.model.change(writer => {
-            writer.insertText(text, editor.model.document.selection.getLastPosition());
-            editor.editing.view.focus();
+            const insertPosition = editor.model.document.selection.getLastPosition();
+            writer.insertText(text, insertPosition);
+            
+            // Cursor ans Ende des eingefügten Textes setzen
+            const newPosition = insertPosition.getShiftedBy(text.length);
+            writer.setSelection(newPosition);
         });
+        editor.editing.view.focus();
     }
 }
 
 /***************************************************************************************************************************************************/
-// editorSetVisible blendet den Editor ein oder aus. Wenn er eingebledet wird, wird er auf die Breite der Menubar gesetzt und unterlab der Menubar positioniert
-// hintergrundObjektId ist die Id des Objekts, das im Hintergrund sichtbar bleiben soll, allerdings leicht abgedimmt.
-
+/**
+ * Blendet den Editor ein oder aus. Wenn er eingeblendet wird, wird er auf die Breite der Menubar gesetzt und unterhalb der Menubar positioniert.
+ * @param {boolean} visible 
+ * @param {string} hintergrundObjektId Id des Objekts, das im Hintergrund sichtbar bleiben soll, allerdings leicht abgedimmt.
+ */
 export function editorSetVisible(visible, hintergrundObjektId = '') {
     if (visible) {
         // Wir machen den Editor sichtbar
