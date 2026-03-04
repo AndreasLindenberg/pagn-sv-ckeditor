@@ -94,20 +94,20 @@ async function onSpeichern(mailtext, status, zielgruppe, betrachtertyp, betracht
                 antwortmailadresse = document.getElementById("lkmailmenu").value;
             } else if (betrachtertyp === 'A') {
                 // Admins können ihre eigene Mailadresse hinterlegen.
-                antwortmailadresse = document.getElementById("lkantwortmail").innerText;
+                antwortmailadresse = document.getElementById("lkantwortmail").textContent;
             }
         }
 
         const maildata = { betreff: betreff
                             , mailtext: mailtext
                             , zielgruppe: zielgruppe
-                            , mailid: parseInt(document.getElementById("mailSpeichern").dataset.mailid)     // Falls mailid = 0 ist, wird die Mail neu angelegt.
+                            , mailid: parseInt(document.getElementById("mailSpeichern").dataset.mailid, 10)     // Falls mailid = 0 ist, wird die Mail neu angelegt.
                             , klasseid: 0
                             , adressaten: 0
                             , fachid: 0
                             , cckollegen: 0
-                            , ccschulleitung: (document.getElementById("ccschulleitung").checked) ? 1 : 0
-                            , ccservicecenter: (document.getElementById("ccservicecenter").checked) ? 1 : 0
+                            , ccschulleitung: document.getElementById("ccschulleitung").checked ? 1 : 0
+                            , ccservicecenter: document.getElementById("ccservicecenter").checked ? 1 : 0
                             , status: status
                             , antwortmailadresse: antwortmailadresse
                             };
@@ -116,16 +116,15 @@ async function onSpeichern(mailtext, status, zielgruppe, betrachtertyp, betracht
             // Zielgruppe: Studierende
             // Welche Klasse?
             const klmenu = document.getElementById("klmenu");
-            maildata.klasseid = parseInt(klmenu.value);
-
+            maildata.klasseid = parseInt(klmenu.value, 10);
             // Kopie an Kollegen?
-            maildata.cckollegen = (document.getElementById("cckollegen").checked) ? 1 : 0;
+            maildata.cckollegen = document.getElementById("cckollegen").checked ? 1 : 0;
         } else {
             // Zielgruppe: Lehrkräfte
             const item = zielgruppenmenu.options[zielgruppenmenu.selectedIndex];
             maildata.adressaten = item.dataset.adressaten;
-            maildata.klasseid = parseInt(item.dataset.klasseid);
-            maildata.fachid = parseInt(item.dataset.fachid);
+            maildata.klasseid = parseInt(item.dataset.klasseid, 10);
+            maildata.fachid = parseInt(item.dataset.fachid, 10);
         }
 
         // Das Verschicken von Mails kann einige Sekunden dauern - so lange lassen wir einen erneuten Klick auf die Buttons nicht zu.
@@ -136,7 +135,7 @@ async function onSpeichern(mailtext, status, zielgruppe, betrachtertyp, betracht
 
         // Falls wir Anhänge haben, zeigen wir immer den Spinner, da der Versand dann länger dauert.
         const filebut = document.getElementById("file");
-        const anhanggroesse = parseInt(filebut.dataset.anhanggroesse);
+        const anhanggroesse = parseInt(filebut.dataset.anhanggroesse, 10);
 
         // Spinning starten
         if (status === 2 || status === 3 && anhanggroesse > 0) {

@@ -212,8 +212,8 @@ function urlKorrigieren($url) {
 
 function smtpmailHTML($empfaengermail, $empfaengername, $absendermail, $absendername, $betreff, $mailtextHTML, $standort, $urls = [])
 {
-    if ($empfaengermail === '') {
-        phpmail('lindenberg@abendgymnasien.de', "Fehler in smtpmailHTML", "Keine E-Mail-Adresse für Empfänger hinterlegt.\n". $mailtextHTML, $standort);
+    if ($empfaengermail === '') { 
+        phpmail($_SESSION['SU_EMAIL_ADRESS'], "Fehler in smtpmailHTML", "Keine E-Mail-Adresse für Empfänger hinterlegt.\n". $mailtextHTML, $standort);
         return;
     }
 
@@ -238,7 +238,7 @@ function smtpmailHTML($empfaengermail, $empfaengername, $absendermail, $absender
         $mail->setFrom($absendermail, $absendername);
         if ($_SERVER['SERVER_NAME'] === 'localhost')
             // Auf dem Testserver gehen Mails nur an mich.
-            $empfaengermail = 'lindenberg@abendgymnasien.de';
+            $empfaengermail = $_SESSION['SU_EMAIL_ADRESS'];
         $mail->addAddress($empfaengermail, $empfaengername);
 
         prepareImagesFromCKEditForMail($mailtextHTML);
@@ -276,10 +276,10 @@ function smtpmailHTML($empfaengermail, $empfaengername, $absendermail, $absender
 
         // E-Mail senden            
         if (!$mail->send()) {
-            phpmail('lindenberg@abendgymnasien.de', 'Fehler in smtpmailHTML', $mail->ErrorInfo.'\n'. $mailtextHTML, $standort);
+            phpmail($_SESSION['SU_EMAIL_ADRESS'], 'Fehler in smtpmailHTML', $mail->ErrorInfo.'\n'. $mailtextHTML, $standort);
         }
     } catch (Exception $e) {
-        phpmail('lindenberg@abendgymnasien.de', 'Fehler in smtpmailHTML', $mail->ErrorInfo .'\n'. $mailtextHTML, $standort);
+        phpmail($_SESSION['SU_EMAIL_ADRESS'], 'Fehler in smtpmailHTML', $mail->ErrorInfo .'\n'. $mailtextHTML, $standort);
     }
 }
 
