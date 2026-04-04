@@ -278,7 +278,7 @@ function smtpmailHTML($empfaengermail, $empfaengername, $absendermail, $absender
         if (!$mail->send()) {
             phpmail($_SESSION['SU_EMAIL_ADRESS'], 'Fehler in smtpmailHTML', $mail->ErrorInfo.'\n'. $mailtextHTML, $standort);
         }
-    } catch (Exception $e) {
+    } catch (Throwable $e) {
         phpmail($_SESSION['SU_EMAIL_ADRESS'], 'Fehler in smtpmailHTML', $mail->ErrorInfo .'\n'. $mailtextHTML, $standort);
     }
 }

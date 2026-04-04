@@ -83,7 +83,7 @@ import {
  */
 export function editorCreate() {
     return new Promise((resolve, reject) => {
-        let uploadsurl = new URL("json/json_ckeditoruploads.php", window.location.origin + "/pagn-sv/");
+        const uploadsurl = new URL("json/json_ckeditoruploads.php", document.baseURI);
 
         ClassicEditor
             .create(document.querySelector('#editor'), {
@@ -425,6 +425,19 @@ export function editorAdjustSize() {
     if (toolbar) {
         totalLineHeight += toolbar.getBoundingClientRect().height;
     }
+
+    // Die Borders des CKEditor-Containers (.ck-editor, .ck-editor__editable) berücksichtigen.
+    const ckEditor = document.querySelector('.ck.ck-editor');
+    if (ckEditor) {
+        const ckStyle = window.getComputedStyle(ckEditor);
+        totalLineHeight += parseFloat(ckStyle.borderTopWidth) + parseFloat(ckStyle.borderBottomWidth);
+    }
+    const ckEditable = document.querySelector('.ck-editor__editable');
+    if (ckEditable) {
+        const ckEditableStyle = window.getComputedStyle(ckEditable);
+        totalLineHeight += parseFloat(ckEditableStyle.borderTopWidth) + parseFloat(ckEditableStyle.borderBottomWidth);
+    }
+
     // Verfügbare Höhe berechnen
     availableHeight -= totalLineHeight;
 
@@ -435,7 +448,7 @@ export function editorAdjustSize() {
         writer.setStyle( 'inline-padding', '10px', root );
     } );
     
-    // Jetzt passen wir noch die Breits an. Da haben wir weniger zu tun, da es nur eine Spalte gibt, die des Editors.
+    // Jetzt passen wir noch die Breite an. Da haben wir weniger zu tun, da es nur eine Spalte gibt, die des Editors.
     // Links und rechts haben wir nur padding zu beachten.
     const editorDialogWidth = editorDialog.clientWidth;
     const editorDialogPaddingLeft = parseFloat(computedStyle.paddingLeft);

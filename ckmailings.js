@@ -147,7 +147,7 @@ async function onSpeichern(mailtext, status, zielgruppe, betrachtertyp, betracht
             spinnergestartet = true;
         }
 
-        let url = new URL("json/json_mailings.php", window.location.origin + "/pagn-sv/");
+        const url = new URL("json/json_mailings.php", document.baseURI);
         url.searchParams.append('aktion', 'JSONMailSenden');
 
         const response = await fetch(url, {
