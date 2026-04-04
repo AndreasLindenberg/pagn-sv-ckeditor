@@ -24,6 +24,14 @@
 /***************************************************************************************************************************************************/
 'use strict';
 
+// Bekannter, harmloser Browser-Fehler: CKEditors interner ResizeObserver kann nicht alle
+// Notifications in einem einzigen Animation-Frame ausliefern. Diesen Fehler unterdrücken.
+window.addEventListener('error', (ev) => {
+    if (ev.message === 'ResizeObserver loop completed with undelivered notifications.') {
+        ev.stopImmediatePropagation();
+    }
+});
+
 let editor = null;
 
 import {
