@@ -184,12 +184,10 @@ function ladeDatei($url) {
 
     if (curl_errno($ch)) {
         error_log('cURL-Fehler: ' . curl_error($ch));
-        curl_close($ch);
         return false;
     }
 
     $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    curl_close($ch);
 
     return ($httpCode === 200) ? $data : false;
 }
