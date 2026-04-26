@@ -147,21 +147,7 @@ async function onSpeichern(mailtext, status, zielgruppe, betrachtertyp, betracht
             spinnergestartet = true;
         }
 
-        const url = new URL("json/json_mailings.php", document.baseURI);
-        url.searchParams.append('aktion', 'JSONMailSenden');
-
-        const response = await fetch(url, {
-                method: "POST",
-                headers: { "Content-Type": "application/json; charset=UTF-8" },
-                body: JSON.stringify(maildata)
-            });
-        if (!response.ok) {
-            throw new Error(`Netzwerkfehler in JSONMailSenden: ${response.status} (${response.statusText})`);
-        }
-        const result = await response.json();
-        if (result.error) {
-            throw new Error(result.error);
-        }
+        const result = await fetchJSON("json/json_mailings.php", { aktion: 'JSONMailSenden' }, maildata);
 
         // Spinning beenden
         if (spinnergestartet) {
