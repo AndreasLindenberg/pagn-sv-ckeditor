@@ -20,7 +20,7 @@
 include_once '../includes/session.inc.php';
 
 // Haben wir eine gültige Session?
-checksession(true, true, false);
+checksession(admin: true, lehrkraft: true, studierende: false);
 
 header('Content-Type: application/json');
 
