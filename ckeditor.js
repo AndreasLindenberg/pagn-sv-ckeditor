@@ -32,6 +32,22 @@ window.addEventListener('error', (ev) => {
     }
 });
 
+// Style einmalig in den Head injizieren: Trennlinie zwischen den Zeilen einer mehrzeiligen Toolbar.
+// Wird bei jedem Modul-Load nur einmal angelegt (id-Check), damit Mehrfach-Imports kein Duplikat erzeugen.
+(function injectToolbarLineBreakStyle() {
+    if (document.getElementById('pag-ckeditor-toolbar-style')) return;
+    const style = document.createElement('style');
+    style.id = 'pag-ckeditor-toolbar-style';
+    // Achtung: .ck-toolbar__line-break liegt eine Ebene tiefer (in .ck-toolbar__items),
+    // daher kein '>' (direkter Kind), sondern Descendant-Selektor.
+    style.textContent =
+        '.ck.ck-toolbar .ck-toolbar__line-break {' +
+            'border-top: 1px solid var(--ck-color-toolbar-border, #d3d3d3);' +
+            'margin: 6px 0;' +
+        '}';
+    document.head.appendChild(style);
+})();
+
 let editor = null;
 
 import {
@@ -44,8 +60,11 @@ import {
     BlockQuote,
     Bold,
     CloudServices,
-    CodeBlock,
     Essentials,
+    FontBackgroundColor,
+    FontColor,
+    FontFamily,
+    FontSize,
     GeneralHtmlSupport,
     Heading,
     HorizontalLine,
@@ -80,6 +99,10 @@ import {
     Underline
 } from 'ckeditor5';
 
+// Deutsche Übersetzungen für die Editor-UI (Tooltips, Menü-Beschriftungen, Dialoge).
+// Ohne diesen Import bleibt CKEditor trotz language: 'de' bei der englischen Default-Beschriftung.
+import deTranslations from 'ckeditor5/translations/de.js';
+
 /***************************************************************************************************************************************************/
 /**
  * Erstellt einen CKEditor und bindet ihn an das Textarea-Element mit der Id "editor". Dabei werden die Toolbar, die Plugins und die Sprache des Editors konfiguriert.
@@ -96,13 +119,17 @@ export function editorCreate() {
         ClassicEditor
             .create(document.querySelector('#editor'), {
                 toolbar: {
-                    items: [ 'heading'
-                        , '|', 'bold', 'italic', 'underline'
-                        , '|', 'horizontalLine'
-                        , '|', 'link', 'insertTable', 'insertImage', 'codeBlock'
+                    // '-' erzwingt einen Zeilenumbruch in der Toolbar; greift nur in Kombination
+                    // mit shouldNotGroupWhenFull: true. Erste Zeile: Typografie & Schrift-Formatierung.
+                    // Zweite Zeile: Einfügen, Layout, Undo/Redo, Trennlinie.
+                    items: [ 'heading', 'fontSize', 'fontFamily'
+                        , '|', 'bold', 'italic', 'underline', 'fontColor', 'fontBackgroundColor'
+                        , '-', 'link', 'insertTable', 'insertImage'
                         , '|', 'alignment', 'bulletedList', 'numberedList', 'blockQuote'
                         , '|', 'undo', 'redo'
-                        ]
+                        , '|', 'horizontalLine'
+                        ],
+                    shouldNotGroupWhenFull: true
                 },
                 plugins: [
                     Alignment,
@@ -113,8 +140,11 @@ export function editorCreate() {
                     BlockQuote,
                     Bold,
                     CloudServices,
-                    CodeBlock,
                     Essentials,
+                    FontBackgroundColor,
+                    FontColor,
+                    FontFamily,
+                    FontSize,
                     GeneralHtmlSupport,
                     Heading,
                     HorizontalLine,
@@ -150,6 +180,37 @@ export function editorCreate() {
                     // TodoList,
                     Underline
                 ],
+                fontSize: {
+                    // Pixelwerte als Optionen — supportAllValues: true erlaubt zusätzlich freie Eingabe.
+                    // Der jeweils aktuelle Default des Editors (Body-Schrift) bleibt über 'default' wählbar.
+                    options: [10, 11, 12, 'default', 14, 16, 18, 20, 24, 28, 32, 36, 48],
+                    supportAllValues: true
+                },
+                fontFamily: {
+                    // 'default' lässt das Fach am System-Font hängen; sonst gängige Web-stable Schriften.
+                    options: [
+                        'default',
+                        'Arial, Helvetica, sans-serif',
+                        'Helvetica Neue, Helvetica, Arial, sans-serif',
+                        'Verdana, Geneva, sans-serif',
+                        'Tahoma, Geneva, sans-serif',
+                        'Trebuchet MS, Helvetica, sans-serif',
+                        'Georgia, serif',
+                        'Times New Roman, Times, serif',
+                        'Courier New, Courier, monospace',
+                        'Consolas, Monaco, monospace'
+                    ],
+                    supportAllValues: true
+                },
+                fontColor: {
+                    // Erweiterte Standardpalette in einem 6-Spalten-Raster, Mehrfachzeilen anzeigen.
+                    columns: 6,
+                    documentColors: 12
+                },
+                fontBackgroundColor: {
+                    columns: 6,
+                    documentColors: 12
+                },
                 heading: {
                     options: [{
                             model: 'paragraph',
@@ -316,6 +377,7 @@ export function editorCreate() {
                     contentToolbar: ['tableColumn', 'tableRow', 'mergeTableCells', 'tableProperties', 'tableCellProperties']
                 },
                 language: 'de',
+                translations: [deTranslations],
                 simpleUpload: {
                     uploadUrl: uploadsurl.toString(), // Hier den Pfad zum Upload-Endpoint anpassen
                     withCredentials: true,
